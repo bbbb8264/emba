@@ -1,0 +1,5 @@
+ifndef WRITEPICTURE
+#define WRITEPICTURE
+
+#endif // WRITEPICTURE
+

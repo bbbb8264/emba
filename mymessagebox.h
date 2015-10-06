@@ -1,0 +1,5 @@
+#ifndef MYMESSAGEBOX
+#define MYMESSAGEBOX
+
+#endif // MYMESSAGEBOX
+
