@@ -5,19 +5,19 @@
 
 #include <QtWidgets>
 struct conditionset;
-class ChooseStudentToCourseCourseModel;
+class SelectStudentSqlQueryModel;
 class CheckBoxIdentityModel;
-class AddStudentToCourse : public QWidget
+class SelectStudent : public QWidget
 {
     Q_OBJECT
 public slots:
     void addacondition();
     void deleteacondition(conditionset*& con);
-    void nextstep();
+    void finish();
     void uncheckall();
     void selectall();
 signals:
-    void submit(QStringList course,QStringList coursename);
+    void cleanPrevious();
 private:
     void addtolinkedlist(conditionset* temp);
     void addatlast(conditionset* temp);
@@ -30,11 +30,14 @@ private:
     bool makecondition(conditionset*& temp);
     QString maketotalfilter();
 public:
+    QMessageBox msg;
+    QStringList coursenumberlist;
+    QStringList coursenamelist;
     QStringList conditions;
     QString filter;
-    ChooseStudentToCourseCourseModel* model;
+    SelectStudentSqlQueryModel* model;
     CheckBoxIdentityModel* proxy;
-    AddStudentToCourse();
+    SelectStudent(QStringList,QStringList);
     QHBoxLayout* mainlayout;
     QFrame* conditionwidget;
     QVBoxLayout* conditionlayout;
@@ -45,12 +48,13 @@ public:
     QFrame* conditionshowwidget;
     QVBoxLayout* conditionshowlayout;
     conditionset* conditionlast;
+    QTableView* tableview;
     QWidget* resultwidget;
     QVBoxLayout* resultlayout;
     QWidget* resultaddwidget;
     QHBoxLayout* resultaddlayout;
     QWidget* resultshowwidget;
-    QTableView* tableview;
+    QPushButton* previousbutton;
     QPushButton* submitbutton;
     QPushButton* selectallbutton;
     QPushButton* uncheckallbutton;

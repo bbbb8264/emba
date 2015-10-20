@@ -1,4 +1,4 @@
-#include "checkbox_delegate.h"
+﻿#include "checkbox_delegate.h"
 
 #include <QtGui>
 
@@ -20,7 +20,6 @@ void CheckBoxDelegate::paint(QPainter *painter,
                              const QStyleOptionViewItem &option,
                              const QModelIndex &index) const {
   bool checked = index.model()->data(index, Qt::CheckStateRole).toBool();
-
   QStyleOptionButton check_box_style_option;
   check_box_style_option.state |= QStyle::State_Enabled;
   if (checked) {
@@ -41,7 +40,6 @@ bool CheckBoxDelegate::editorEvent(QEvent *event,
                                    const QStyleOptionViewItem &option,
                                    const QModelIndex &index) {
   if (event->type() == QEvent::MouseButtonRelease) {
-      qDebug() << index.row();
       model->setData(index,"",Qt::CheckStateRole);
       return true;
   }

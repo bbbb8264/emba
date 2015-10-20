@@ -1,4 +1,4 @@
-/*#include "searchstudent.h"
+#include "searchstudent.h"
 #include "conditionset.h"
 #include "conditionwidget.h"
 #include "deletebutton.h"
@@ -6,7 +6,8 @@
 #include "mysqlrelationaltablemodel.h"
 #include "checkbox_delegate.h"
 #include <qsqlrelationaltablemodel.h>
-void StudentSelect::init()
+#pragma execution_character_set("utf-8")
+void SearchStudent::init()
 {
     mainlayout = new QHBoxLayout;
     conditionwidget = new QFrame;
@@ -23,14 +24,13 @@ void StudentSelect::init()
     resultaddwidget = new QWidget;
     resultaddlayout = new QHBoxLayout;
     resultshowwidget = new QWidget;
-    proxy = new ActionSqlRelationModel;
 }
-StudentSelect::StudentSelect()
+SearchStudent::SearchStudent()
 {
     //setStyleSheet("border: 1px solid black");
     init();
     setfont();
-    conditions << "å­¸è™Ÿ" << "ç”Ÿæ—¥" << "ç•¢æ¥­ç´šæ•¸" << "å®¶è£¡é›»è©±" << "æ‰‹æ©Ÿé›»è©±";
+    conditions << "¾Ç¸¹" << "¥Í¤é" << "²¦·~¯Å¼Æ" << "®a¸Ì¹q¸Ü" << "¤â¾÷¹q¸Ü";
     conditionsetting->setMinimumWidth(150);
     conditionsetting->addItems(conditions);
     conditionsettinglayout->addWidget(conditionsetting);
@@ -55,15 +55,14 @@ StudentSelect::StudentSelect()
     model->setTable("student");
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->select();
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("å‡†è€ƒè­‰è™Ÿç¢¼"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("å­¸è™Ÿ"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("å­¸ç”Ÿèº«åˆ†"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("ç•¢æ¥­ç´šæ•¸"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("å§“å"));
-    model->setHeaderData(7, Qt::Horizontal, QObject::tr("æ€§åˆ¥"));
-    model->setHeaderData(19, Qt::Horizontal, QObject::tr("åŠŸèƒ½åˆ—"));
-    proxy->setSourceModel(model);
-    QTableView* tableview = new QTableView;
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("­ã¦ÒÃÒ¸¹½X"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("¾Ç¸¹"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("³ø¦Ò¨­¤À"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("²¦·~¯Å¼Æ"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("©m¦W"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("©Ê§O"));
+    model->setHeaderData(19, Qt::Horizontal, QObject::tr("¥\¯à¦C"));
+    tableview = new QTableView;
     QHeaderView* headerview = tableview->horizontalHeader();
     headerview->setSectionResizeMode(QHeaderView::Stretch);
     headerview->setStyleSheet("QHeaderView::section {background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #00FFFF, stop: 0.8 #40E0D0, stop:1 #87CECB);color: white;padding-left: 4px;border: 1px solid #87CECB;}");
@@ -72,7 +71,7 @@ StudentSelect::StudentSelect()
     headerview2->setStyleSheet("QHeaderView::section {background-color: #808080;color: white;padding-left: 4px;}");
     tableview->setHorizontalHeader(headerview);
     tableview->setVerticalHeader(headerview2);
-    tableview->setModel(proxy);
+    tableview->setModel(model);
     tableview->setMinimumWidth(500);
     tableview->setMinimumHeight(300);
     tableview->setColumnWidth(3,800);
@@ -90,10 +89,9 @@ StudentSelect::StudentSelect()
     tableview->setColumnHidden(17,true);
     tableview->setColumnHidden(18,true);
     tableview->setColumnWidth(19,1);
-    CheckBoxDelegate* delegate = new CheckBoxDelegate;
-    tableview->setItemDelegateForColumn(19,delegate);
     //connect(tableview,SIGNAL(clicked(const QModelIndex &)),proxy,SLOT(setcheck(const QModelIndex &)));
     tableview->setFrameShape(QFrame::StyledPanel);
+
     resultlayout->addWidget(tableview);
     resultwidget->setLayout(resultlayout);
 
@@ -101,7 +99,7 @@ StudentSelect::StudentSelect()
     mainlayout->addWidget(resultwidget);
     setLayout(mainlayout);
 }
-void StudentSelect::addacondition()
+void SearchStudent::addacondition()
 {
     conditionset* temp;
     if(makecondition(temp)){
@@ -110,28 +108,27 @@ void StudentSelect::addacondition()
         scanconditionset();
         qDebug() << maketotalfilter();
         model->setFilter(maketotalfilter());
-        proxy->resetcheckstate(proxy->rowCount());
         model->select();
         setcondition(temp);
     }
 }
 
-void StudentSelect::setfont()
+void SearchStudent::setfont()
 {
     QFont font;
     font.setPixelSize(15);
-    font.setFamily("å¾®è»Ÿæ­£é»‘é«”");
+    font.setFamily("·L³n¥¿¶ÂÅé");
     conditionwidget->setFont(font);
 }
 
-void StudentSelect::setcondition(conditionset* currentconditionset)
+void SearchStudent::setcondition(conditionset* currentconditionset)
 {
     currentconditionset->condition = new ConditionWidget(currentconditionset);
     conditionshowlayout->addWidget(currentconditionset->condition);
     connect(currentconditionset->condition->closebutton,SIGNAL(click(conditionset*&)),this,SLOT(deleteacondition(conditionset*&)));
 }
 
-bool StudentSelect::makecondition(conditionset*& temp)
+bool SearchStudent::makecondition(conditionset*& temp)
 {
     temp = new conditionset;
     temp->target = conditionsetting->currentText();
@@ -139,7 +136,7 @@ bool StudentSelect::makecondition(conditionset*& temp)
     temp->expression.remove(QChar(' '), Qt::CaseInsensitive);
     if(temp->expression.isEmpty())
     {
-        QMessageBox msg(QMessageBox::Warning,"æç¤º","ä½ æ²’æœ‰è¼¸å…¥ä»»ä½•è³‡æ–™");
+        QMessageBox msg(QMessageBox::Warning,"´£¥Ü","§A¨S¦³¿é¤J¥ô¦ó¸ê®Æ");
         msg.layout()->setMargin(15);
         msg.layout()->setSpacing(10);
         msg.exec();
@@ -150,7 +147,7 @@ bool StudentSelect::makecondition(conditionset*& temp)
         temp->expression.remove(0,1);
         if(temp->expression.isEmpty())
         {
-            QMessageBox msg(QMessageBox::Warning,"æç¤º","ç¼ºå°‘æ¯”è¼ƒç”¨çš„è³‡æ–™");
+            QMessageBox msg(QMessageBox::Warning,"´£¥Ü","¯Ê¤Ö¤ñ¸û¥Îªº¸ê®Æ");
             msg.layout()->setMargin(15);
             msg.layout()->setSpacing(10);
             msg.exec();
@@ -161,7 +158,7 @@ bool StudentSelect::makecondition(conditionset*& temp)
             temp->expression.remove(0,1);
             if(temp->expression.isEmpty())
             {
-                QMessageBox msg(QMessageBox::Warning,"æç¤º","ç¼ºå°‘æ¯”è¼ƒç”¨çš„è³‡æ–™");
+                QMessageBox msg(QMessageBox::Warning,"´£¥Ü","¯Ê¤Ö¤ñ¸û¥Îªº¸ê®Æ");
                 msg.layout()->setMargin(15);
                 msg.layout()->setSpacing(10);
                 msg.exec();
@@ -171,7 +168,7 @@ bool StudentSelect::makecondition(conditionset*& temp)
         if(temp->expression != 0)
             if(temp->expression.toInt() == 0)
             {
-                QMessageBox msg(QMessageBox::Warning,"æç¤º","ä½ è¼¸å…¥çš„ä¸æ˜¯æ•¸å­—");
+                QMessageBox msg(QMessageBox::Warning,"´£¥Ü","§A¿é¤Jªº¤£¬O¼Æ¦r");
                 msg.layout()->setMargin(15);
                 msg.layout()->setSpacing(10);
                 msg.exec();
@@ -188,28 +185,28 @@ bool StudentSelect::makecondition(conditionset*& temp)
     return true;
 }
 
-void StudentSelect::makefilter(conditionset *temp)
+void SearchStudent::makefilter(conditionset *temp)
 {
-    if(temp->target == "å­¸è™Ÿ"){
+    if(temp->target == "¾Ç¸¹"){
         if(temp->operate == "=" || temp->operate == "look like"){
             temp->filter = "studentnumber LIKE '%" + temp->expression +"%'";
             temp->operate = "look like";
         }else{
             temp->filter = "studentnumber " + temp->operate + " '" + temp->expression +"'";
         }
-    }else if(temp->target == "å®¶è£¡é›»è©±"){
+    }else if(temp->target == "®a¸Ì¹q¸Ü"){
         temp->filter = "telephoneday " + temp->operate + " '" + temp->expression + "'";
         temp->filter += " or telephonenight " + temp->operate + " '" + temp->expression + "'";
-    }else if(temp->target == "ç•¢æ¥­ç´šæ•¸"){
+    }else if(temp->target == "²¦·~¯Å¼Æ"){
         temp->filter = "graduatelevel " + temp->operate + " '" + temp->expression + "'";
-    }else if(temp->target == "æ‰‹æ©Ÿé›»è©±"){
+    }else if(temp->target == "¤â¾÷¹q¸Ü"){
         temp->filter = "mobile " + temp->operate + " '" + temp->expression + "'";
-    }else if(temp->target == "ç”Ÿæ—¥"){
+    }else if(temp->target == "¥Í¤é"){
         temp->filter = "birthday " + temp->operate + " '" + temp->expression + "'";
     }
 }
 
-void StudentSelect::addtolinkedlist(conditionset *temp)
+void SearchStudent::addtolinkedlist(conditionset *temp)
 {
     if(addatmiddle(temp))
     {}else
@@ -218,18 +215,21 @@ void StudentSelect::addtolinkedlist(conditionset *temp)
     }
 }
 
-void StudentSelect::addatlast(conditionset *temp)
+void SearchStudent::addatlast(conditionset *temp)
 {
     if(conditionlast != NULL)
     {
         conditionlast->next = temp;
         temp->pre = conditionlast;
+        conditionlast = temp;
+        conditionlast->next = NULL;
+    }else{
+        conditionlast = temp;
+        conditionlast->next = NULL;
+        conditionlast->pre = NULL;
     }
-    conditionlast = temp;
-    conditionlast->pre = NULL;
-    conditionlast->next = NULL;
 }
-bool StudentSelect::addatmiddle(conditionset *temp)
+bool SearchStudent::addatmiddle(conditionset *temp)
 {
     conditionset* temp2 = conditionlast;
     while(temp2 != NULL && temp2->target != temp->target)
@@ -269,7 +269,7 @@ bool StudentSelect::addatmiddle(conditionset *temp)
     }
 }
 
-QString StudentSelect::maketotalfilter()
+QString SearchStudent::maketotalfilter()
 {
     conditionset* temp = conditionlast;
     QString filter;
@@ -320,7 +320,7 @@ QString StudentSelect::maketotalfilter()
     return filter;
 }
 
-void StudentSelect::scanconditionset()
+void SearchStudent::scanconditionset()
 {
     conditionset* temp = conditionlast;
     qDebug() << "scan start";
@@ -336,7 +336,7 @@ void StudentSelect::scanconditionset()
     qDebug() << "scan finish";
 }
 
-void StudentSelect::deleteacondition(conditionset*& con)
+void SearchStudent::deleteacondition(conditionset*& con)
 {
     conditionset* temp = con;
     if(conditionlast == con)
@@ -352,7 +352,6 @@ void StudentSelect::deleteacondition(conditionset*& con)
     delete temp->condition;
     delete temp;
     model->setFilter(maketotalfilter());
-    proxy->resetcheckstate(proxy->rowCount());
     model->select();
 }
-*/
+

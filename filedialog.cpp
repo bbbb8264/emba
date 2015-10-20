@@ -1,4 +1,4 @@
-#include "filedialog.h"
+﻿#include "filedialog.h"
 
 FileChooser::FileChooser()
 {

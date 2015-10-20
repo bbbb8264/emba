@@ -1,4 +1,4 @@
-#include "checkboxidentitymodel.h"
+﻿#include "checkboxidentitymodel.h"
 
 CheckBoxIdentityModel::CheckBoxIdentityModel(int position){
     checkstate = new Qt::CheckState[10000];
@@ -41,10 +41,20 @@ bool CheckBoxIdentityModel::setData(const QModelIndex &index,
         }
         return true;
     }
-    return false;
+    return true;
 }
 void CheckBoxIdentityModel::resetcheckstate(int rowCount){
     for(int i = 0;i < rowCount;i++){
         checkstate[i] = Qt::Unchecked;
+    }
+}
+void CheckBoxIdentityModel::uncheckall(){
+    for(int i = 0;i < this->rowCount();i++){
+        checkstate[i] = Qt::Unchecked;
+    }
+}
+void CheckBoxIdentityModel::selectall(){
+    for(int i = 0;i < this->rowCount();i++){
+        checkstate[i] = Qt::Checked;
     }
 }

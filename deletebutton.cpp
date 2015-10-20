@@ -1,4 +1,4 @@
-#include "deletebutton.h"
+﻿#include "deletebutton.h"
 
 DeleteButton::DeleteButton(conditionset* parent)
 {

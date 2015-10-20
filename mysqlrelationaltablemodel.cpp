@@ -1,4 +1,4 @@
-#include "mysqlrelationaltablemodel.h"
+﻿#include "mysqlrelationaltablemodel.h"
 
 
 MySqlRelationalTableModel::MySqlRelationalTableModel(){
@@ -6,5 +6,5 @@ MySqlRelationalTableModel::MySqlRelationalTableModel(){
 }
 int MySqlRelationalTableModel::columnCount(const QModelIndex &) const
 {
-    return 20;
+    return 19;
 }

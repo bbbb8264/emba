@@ -1,14 +1,14 @@
-Ôªø#include "addstudenttocourse.h"
+#include "selectstudent.h"
 #include "conditionset.h"
 #include "conditionwidget.h"
 #include "deletebutton.h"
 #include "checkboxidentitymodel.h"
 #include "mysqlrelationaltablemodel.h"
-#include "choosestudenttocoursecoursemodel.h"
+#include "selectstudentsqlquerymodel.h"
 #include "checkbox_delegate.h"
 #include <qsqlrelationaltablemodel.h>
 #pragma execution_character_set("utf-8")
-void AddStudentToCourse::init()
+void SelectStudent::init()
 {
     mainlayout = new QHBoxLayout;
     conditionwidget = new QFrame;
@@ -28,16 +28,25 @@ void AddStudentToCourse::init()
     proxy = new CheckBoxIdentityModel(5);
     controllwidget = new QWidget;
     controlllayout = new QHBoxLayout;
-    submitbutton = new QPushButton("‰∏ã‰∏ÄÊ≠•");
-    uncheckallbutton = new QPushButton("ÂÖ®ÈÉ®ÂèñÊ∂à");
-    selectallbutton = new QPushButton("ÂÖ®ÈÉ®ÈÅ∏Âèñ");
+    submitbutton = new QPushButton("ßπ¶®");
+    previousbutton = new QPushButton("§W§@®B");
+    uncheckallbutton = new QPushButton("•˛≥°®˙Æ¯");
+    selectallbutton = new QPushButton("•˛≥°øÔ®˙");
 }
-AddStudentToCourse::AddStudentToCourse()
+SelectStudent::SelectStudent(QStringList course,QStringList coursename)
 {
     //setStyleSheet("border: 1px solid black");
     init();
     setfont();
-    conditions << "Ë™≤Á®ãÂêçÁ®±" << "ÊåáÂ∞éËÄÅÂ∏´ÂßìÂêç" << "Â≠∏Âπ¥Â∫¶";
+    msg.layout()->setMargin(20);
+    msg.layout()->setSpacing(10);
+    QFont font;
+    font.setFamily("∑L≥n•ø∂¬≈È");
+    font.setPixelSize(15);
+    msg.setFont(font);
+    coursenumberlist = course;
+    coursenamelist = coursename;
+    conditions << "Ω“µ{¶W∫Ÿ" << "´¸æ…¶—Æv©m¶W";
     conditionsetting->setMinimumWidth(150);
     conditionsetting->addItems(conditions);
     conditionsettinglayout->addWidget(conditionsetting);
@@ -58,13 +67,14 @@ AddStudentToCourse::AddStudentToCourse()
 
     //resultlayout->addWidget(resultaddwidget);
 
-    model = new ChooseStudentToCourseCourseModel;
-    model->setQuery("select year,semester,coursename,teachername,coursenumber from teacher,courseinformation where courseinformation.teachernumber = teacher.teachernumber");
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Â≠∏Âπ¥"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Â≠∏Êúü"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Ë™≤Á®ãÂêçÁ®±"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("ËÄÅÂ∏´ÂêçÁ®±"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("ÂãæÈÅ∏Ê¨Ñ"));
+    model = new SelectStudentSqlQueryModel;
+    model->setQuery("select studentnumber, studentidentity, name, gender, birthday from student");
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("æ«∏π"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("æ«•Õ®≠§¿"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("æ«•Õ©m¶W"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("© ßO"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("•Õ§È"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("§ƒøÔƒÊ"));
     proxy->setSourceModel(model);
     tableview = new QTableView;
     QHeaderView* headerview = tableview->horizontalHeader();
@@ -76,7 +86,6 @@ AddStudentToCourse::AddStudentToCourse()
     tableview->setHorizontalHeader(headerview);
     tableview->setVerticalHeader(headerview2);
     tableview->setModel(proxy);
-    tableview->setColumnHidden(4,true);
     tableview->setMinimumWidth(500);
     tableview->setMinimumHeight(300);
     CheckBoxDelegate* delegate = new CheckBoxDelegate;
@@ -84,9 +93,11 @@ AddStudentToCourse::AddStudentToCourse()
     //connect(tableview,SIGNAL(clicked(const QModelIndex &)),proxy,SLOT(setcheck(const QModelIndex &)));
     tableview->setFrameShape(QFrame::StyledPanel);
 
+    previousbutton->setFixedWidth(100);
+    previousbutton->setFixedHeight(25);
     submitbutton->setFixedWidth(100);
     submitbutton->setFixedHeight(25);
-    connect(submitbutton,SIGNAL(clicked()),this,SLOT(nextstep()));
+    connect(submitbutton,SIGNAL(clicked()),this,SLOT(finish()));
     selectallbutton->setFixedWidth(100);
     selectallbutton->setFixedHeight(25);
     connect(selectallbutton,SIGNAL(clicked()),this,SLOT(selectall()));
@@ -96,6 +107,7 @@ AddStudentToCourse::AddStudentToCourse()
 
     controlllayout->addWidget(selectallbutton);
     controlllayout->addWidget(uncheckallbutton);
+    controlllayout->addWidget(previousbutton);
     controlllayout->addWidget(submitbutton);
     controllwidget->setLayout(controlllayout);
     resultlayout->addWidget(tableview);
@@ -106,13 +118,14 @@ AddStudentToCourse::AddStudentToCourse()
     mainlayout->addWidget(resultwidget);
     setLayout(mainlayout);
 }
-void AddStudentToCourse::addacondition()
+void SelectStudent::addacondition()
 {
     conditionset* temp;
     if(makecondition(temp)){
         makefilter(temp);
         addtolinkedlist(temp);
         scanconditionset();
+        qDebug() << "before make";
         qDebug() << maketotalfilter();
         model->setQuery(maketotalfilter());
         proxy->resetcheckstate(proxy->rowCount());
@@ -120,22 +133,22 @@ void AddStudentToCourse::addacondition()
     }
 }
 
-void AddStudentToCourse::setfont()
+void SelectStudent::setfont()
 {
     QFont font;
     font.setPixelSize(15);
-    font.setFamily("ÂæÆËªüÊ≠£ÈªëÈ´î");
+    font.setFamily("∑L≥n•ø∂¬≈È");
     conditionwidget->setFont(font);
 }
 
-void AddStudentToCourse::setcondition(conditionset* currentconditionset)
+void SelectStudent::setcondition(conditionset* currentconditionset)
 {
     currentconditionset->condition = new ConditionWidget(currentconditionset);
     conditionshowlayout->addWidget(currentconditionset->condition);
     connect(currentconditionset->condition->closebutton,SIGNAL(click(conditionset*&)),this,SLOT(deleteacondition(conditionset*&)));
 }
 
-bool AddStudentToCourse::makecondition(conditionset*& temp)
+bool SelectStudent::makecondition(conditionset*& temp)
 {
     temp = new conditionset;
     temp->target = conditionsetting->currentText();
@@ -143,7 +156,7 @@ bool AddStudentToCourse::makecondition(conditionset*& temp)
     temp->expression.remove(QChar(' '), Qt::CaseInsensitive);
     if(temp->expression.isEmpty())
     {
-        QMessageBox msg(QMessageBox::Warning,"ÊèêÁ§∫","‰Ω†Ê≤íÊúâËº∏ÂÖ•‰ªª‰ΩïË≥áÊñô");
+        QMessageBox msg(QMessageBox::Warning,"¥£•‹","ßA®S¶≥øÈ§J•Ù¶Û∏ÍÆ∆");
         msg.layout()->setMargin(15);
         msg.layout()->setSpacing(10);
         msg.exec();
@@ -154,7 +167,7 @@ bool AddStudentToCourse::makecondition(conditionset*& temp)
         temp->expression.remove(0,1);
         if(temp->expression.isEmpty())
         {
-            QMessageBox msg(QMessageBox::Warning,"ÊèêÁ§∫","Áº∫Â∞ëÊØîËºÉÁî®ÁöÑË≥áÊñô");
+            QMessageBox msg(QMessageBox::Warning,"¥£•‹","Ø §÷§Ò∏˚•Œ™∫∏ÍÆ∆");
             msg.layout()->setMargin(15);
             msg.layout()->setSpacing(10);
             msg.exec();
@@ -165,7 +178,7 @@ bool AddStudentToCourse::makecondition(conditionset*& temp)
             temp->expression.remove(0,1);
             if(temp->expression.isEmpty())
             {
-                QMessageBox msg(QMessageBox::Warning,"ÊèêÁ§∫","Áº∫Â∞ëÊØîËºÉÁî®ÁöÑË≥áÊñô");
+                QMessageBox msg(QMessageBox::Warning,"¥£•‹","Ø §÷§Ò∏˚•Œ™∫∏ÍÆ∆");
                 msg.layout()->setMargin(15);
                 msg.layout()->setSpacing(10);
                 msg.exec();
@@ -175,7 +188,7 @@ bool AddStudentToCourse::makecondition(conditionset*& temp)
         if(temp->expression != 0)
             if(temp->expression.toInt() == 0)
             {
-                QMessageBox msg(QMessageBox::Warning,"ÊèêÁ§∫","‰Ω†Ëº∏ÂÖ•ÁöÑ‰∏çÊòØÊï∏Â≠ó");
+                QMessageBox msg(QMessageBox::Warning,"¥£•‹","ßAøÈ§J™∫§£¨Oº∆¶r");
                 msg.layout()->setMargin(15);
                 msg.layout()->setSpacing(10);
                 msg.exec();
@@ -192,23 +205,28 @@ bool AddStudentToCourse::makecondition(conditionset*& temp)
     return true;
 }
 
-void AddStudentToCourse::makefilter(conditionset *temp)
+void SelectStudent::makefilter(conditionset *temp)
 {
-    if(temp->target == "Ë™≤Á®ãÂêçÁ®±"){
+    if(temp->target == "æ«∏π"){
         if(temp->operate == "=" || temp->operate == "look like"){
-            temp->filter = "courseinformation.coursename LIKE '%" + temp->expression +"%'";
+            temp->filter = "studentnumber LIKE '%" + temp->expression +"%'";
             temp->operate = "look like";
         }else{
             temp->filter = "studentnumber " + temp->operate + " '" + temp->expression +"'";
         }
-    }else if(temp->target == "ÊåáÂ∞éËÄÅÂ∏´ÂßìÂêç"){
-        temp->filter = "teacher.teachername " + temp->operate + " '" + temp->expression + "'";
-    }else if(temp->target == "Â≠∏Âπ¥Â∫¶"){
-        temp->filter = "courseinformation.year " + temp->operate + " '" + temp->expression + "'";
+    }else if(temp->target == "Æa∏Ãπq∏‹"){
+        temp->filter = "telephoneday " + temp->operate + " '" + temp->expression + "'";
+        temp->filter += " or telephonenight " + temp->operate + " '" + temp->expression + "'";
+    }else if(temp->target == "≤¶∑~Ø≈º∆"){
+        temp->filter = "graduatelevel " + temp->operate + " '" + temp->expression + "'";
+    }else if(temp->target == "§‚æ˜πq∏‹"){
+        temp->filter = "mobile " + temp->operate + " '" + temp->expression + "'";
+    }else if(temp->target == "•Õ§È"){
+        temp->filter = "birthday " + temp->operate + " '" + temp->expression + "'";
     }
 }
 
-void AddStudentToCourse::addtolinkedlist(conditionset *temp)
+void SelectStudent::addtolinkedlist(conditionset *temp)
 {
     if(addatmiddle(temp))
     {}else
@@ -217,7 +235,7 @@ void AddStudentToCourse::addtolinkedlist(conditionset *temp)
     }
 }
 
-void AddStudentToCourse::addatlast(conditionset *temp)
+void SelectStudent::addatlast(conditionset *temp)
 {
     if(conditionlast != NULL)
     {
@@ -231,7 +249,7 @@ void AddStudentToCourse::addatlast(conditionset *temp)
         conditionlast->pre = NULL;
     }
 }
-bool AddStudentToCourse::addatmiddle(conditionset *temp)
+bool SelectStudent::addatmiddle(conditionset *temp)
 {
     conditionset* temp2 = conditionlast;
     while(temp2 != NULL && temp2->target != temp->target)
@@ -271,7 +289,7 @@ bool AddStudentToCourse::addatmiddle(conditionset *temp)
     }
 }
 
-QString AddStudentToCourse::maketotalfilter()
+QString SelectStudent::maketotalfilter()
 {
     conditionset* temp = conditionlast;
     QString filter;
@@ -320,13 +338,13 @@ QString AddStudentToCourse::maketotalfilter()
         }
     }
     if(filter.isEmpty()){
-        return "select year,semester,coursename,teachername from teacher,courseinformation where courseinformation.teachernumber = teacher.teachernumber";
+        return "select studentnumber, studentidentity, name, gender, birthday from student";
     }else{
-        return "select year,semester,coursename,teachername from teacher,courseinformation where courseinformation.teachernumber = teacher.teachernumber and " + filter;
+        return "select studentnumber, studentidentity, name, gender, birthday from student where " + filter;
     }
 }
 
-void AddStudentToCourse::scanconditionset()
+void SelectStudent::scanconditionset()
 {
     conditionset* temp = conditionlast;
     qDebug() << "scan start";
@@ -342,7 +360,7 @@ void AddStudentToCourse::scanconditionset()
     qDebug() << "scan finish";
 }
 
-void AddStudentToCourse::deleteacondition(conditionset*& con)
+void SelectStudent::deleteacondition(conditionset*& con)
 {
     conditionset* temp = con;
     if(conditionlast == con)
@@ -360,40 +378,114 @@ void AddStudentToCourse::deleteacondition(conditionset*& con)
     model->setQuery(maketotalfilter());
     proxy->resetcheckstate(proxy->rowCount());
 }
-void AddStudentToCourse::nextstep(){
-    QStringList courselist;
-    QStringList coursename;
+void SelectStudent::finish(){
+    QStringList studentnumberlist;
+    QStringList studentnamelist;
     for(int i = 0;i < proxy->rowCount();i++){
-        QModelIndex index = proxy->index(i,5);
-        if(proxy->data(index,Qt::CheckStateRole).toBool()){
-            courselist.push_back(proxy->data(proxy->index(i,4)).toString());
-            coursename.push_back(proxy->data(proxy->index(i,2)).toString());
+        if(proxy->data(proxy->index(i,5),Qt::CheckStateRole).toBool()){
+            studentnumberlist.push_back(proxy->data(proxy->index(i,0)).toString());
+            studentnamelist.push_back(proxy->data(proxy->index(i,2)).toString());
         }
     }
-    if(courselist.length() > 0){
-        emit submit(courselist,coursename);
+    if(studentnumberlist.length() > 0){
+        QString sql = "insert into choosecourse (coursenumber, studentnumber) values ";
+        QStringList repeatlist;
+        for(int i = 0;i < coursenumberlist.length();i++){
+            for(int j = 0;j < studentnumberlist.length();j++){
+                QString checksql = "select * from choosecourse where coursenumber = '"+coursenumberlist.at(i)+"' and studentnumber = '"+studentnumberlist.at(j)+"'";
+                QSqlQuery check(checksql);
+                if(check.size()){
+                    repeatlist.push_back(coursenumberlist.at(i)+" "+coursenamelist.at(i)+" "+studentnumberlist.at(j)+" "+studentnamelist.at(j));
+                }else{
+                    sql += "('"+coursenumberlist.at(i)+"','"+studentnumberlist.at(j)+"'),";
+                }
+            }
+        }
+        sql.chop(1);
+        qDebug() << sql;
+        QSqlQuery query;
+        query.prepare(sql);
+        if(repeatlist.size() == studentnumberlist.length() * coursenumberlist.length()){
+            msg.setWindowTitle("ƒµßi");
+            msg.setIcon(QMessageBox::Critical);
+            msg.setText("©“¶≥æ«•Õ≠Ï•ª¥N§w∏g•[§J©“¶≥Ω“µ{∑Ì§§");
+            msg.exec();
+            return;
+        }else if(repeatlist.size()){
+            QMessageBox questmsg;
+            questmsg.setWindowTitle("¥£•‹");
+            questmsg.setText("•H§U¨∞§w∏g•[§JΩ“µ{™∫æ«•ÕΩ“µ{πÔ∑”¶W≥Ê\nΩ–∞›¨Oß_±N≥—§U®S¶≥•[§JΩ“µ{™∫æ«•Õƒ~ƒÚºg§J∏ÍÆ∆Æw°H");
+            QString informativetext;
+            for(int i = 0;i < repeatlist.size();i++){
+                informativetext += repeatlist.at(i) + "\n";
+            }
+            informativetext.chop(1);
+            questmsg.setInformativeText(informativetext);
+            questmsg.setIcon(QMessageBox::Warning);
+            questmsg.layout()->setMargin(15);
+            questmsg.layout()->setSpacing(10);
+            QFont font;
+            font.setPixelSize(15);
+            font.setFamily("∑L≥n•ø∂¬≈È");
+            questmsg.setFont(font);
+            questmsg.addButton(QMessageBox::Yes);
+            questmsg.addButton(QMessageBox::No);
+            if(questmsg.exec() == QMessageBox::Yes){
+                if(query.exec()){
+                    QImage icon;
+                    icon.load("right.png");
+                    icon = icon.scaledToWidth(50);
+                    msg.setWindowTitle("ßπ¶®");
+                    msg.setIconPixmap(QPixmap::fromImage(icon));
+                    msg.setText("±Næ«•Õ•[§JΩ“µ{¶®•\");
+                    msg.exec();
+                    emit cleanPrevious();
+                }else{
+                    QImage icon;
+                    icon.load("error.png");
+                    icon = icon.scaledToWidth(50);
+                    msg.setWindowTitle("ø˘ª~");
+                    msg.setIconPixmap(QPixmap::fromImage(icon));
+                    msg.setText("±Næ«•Õ•[§JΩ“µ{•¢±—");
+                    msg.exec();
+                }
+            }
+        }else{
+            if(query.exec()){
+                QImage icon;
+                icon.load("right.png");
+                icon = icon.scaledToWidth(50);
+                msg.setWindowTitle("ßπ¶®");
+                msg.setIconPixmap(QPixmap::fromImage(icon));
+                msg.setText("±Næ«•Õ•[§JΩ“µ{¶®•\");
+                msg.exec();
+                emit cleanPrevious();
+            }else{
+                QImage icon;
+                icon.load("D:/error.png");
+                icon = icon.scaledToWidth(50);
+                msg.setWindowTitle("ø˘ª~");
+                msg.setIconPixmap(QPixmap::fromImage(icon));
+                msg.setText("±Næ«•Õ•[§JΩ“µ{•¢±—");
+                msg.exec();
+            }
+        }
     }else{
-        QMessageBox msg;
-        msg.layout()->setMargin(20);
-        msg.layout()->setSpacing(10);
-        QFont font;
-        font.setFamily("ÂæÆËªüÊ≠£ÈªëÈ´î");
-        font.setPixelSize(15);
-        msg.setFont(font);
         QImage icon;
-        icon.load("error.png");
+        icon.load("D:/error.png");
         icon = icon.scaledToWidth(50);
-        msg.setWindowTitle("ÈåØË™§");
+        msg.setWindowTitle("ø˘ª~");
         msg.setIconPixmap(QPixmap::fromImage(icon));
-        msg.setText("ÈÅ∏ÊìáÁöÑË™≤Á®ãËá≥Â∞ëË¶ÅÊúâ‰∏ÄÈ†Ö");
+        msg.setText("øÔæ‹™∫æ«•Õ¶‹§÷≠n§@¶Ï");
         msg.exec();
     }
 }
-void AddStudentToCourse::selectall(){
+void SelectStudent::selectall(){
     proxy->selectall();
     tableview->viewport()->repaint();
 }
-void AddStudentToCourse::uncheckall(){
+void SelectStudent::uncheckall(){
     proxy->uncheckall();
     tableview->viewport()->repaint();
 }
+

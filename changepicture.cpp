@@ -1,10 +1,12 @@
 #include "changepicture.h"
-
+#pragma execution_character_set("utf-8")
 ChangePicture::ChangePicture()
 {
-    img.load("D:/nullperson.jpg");
-    img = img.scaledToWidth(200);
+    img.load("nullperson.jpg");
+    img = img.scaledToWidth(250);
     setPixmap(QPixmap::fromImage(img));
+    setFrameStyle(QFrame::Panel | QFrame::Raised);
+    setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
 }
 
 bool ChangePicture::event(QEvent* e)
@@ -13,12 +15,12 @@ bool ChangePicture::event(QEvent* e)
     {
         if (e->type() == QEvent::Enter)
         {
-            img.load("D:/nullpersonup.jpg");
-            img = img.scaledToWidth(200);
+            img.load("nullpersonup.jpg");
+            img = img.scaledToWidth(250);
             setPixmap(QPixmap::fromImage(img));
         }else if(e->type() == QEvent::Leave){
-            img.load("D:/nullperson.jpg");
-            img = img.scaledToWidth(200);
+            img.load("nullperson.jpg");
+            img = img.scaledToWidth(250);
             setPixmap(QPixmap::fromImage(img));
         }
     }
@@ -34,7 +36,7 @@ void ChangePicture::mouseReleaseEvent(QMouseEvent * ev)
     QString path = getpicturepath();
     if(newpictureinsert){
         img.load(path);
-        img = img.scaledToWidth(200);
+        img = img.scaledToWidth(250);
         setPixmap(QPixmap::fromImage(img));
     }
 }
@@ -46,14 +48,15 @@ QString ChangePicture::getpicturepath(){
         newpictureinsert = true;
         pictureinsert = true;
         path = filedialog->selectedFiles()[0];
+        emit inserted();
      } else {
         newpictureinsert = false;
-        QMessageBox msg(QMessageBox::Warning,"æç¤º","ä½ æ²’æœ‰é¸æ“‡ä»»ä½•åœ–ç‰‡");
+        QMessageBox msg(QMessageBox::Warning,"´£¥Ü","§A¨S¦³¿ï¾Ü¥ô¦ó¹Ï¤ù");
         msg.layout()->setMargin(15);
         msg.layout()->setSpacing(10);
         QFont font;
         font.setPixelSize(15);
-        font.setFamily("å¾®è»Ÿæ­£é»‘é«”");
+        font.setFamily("·L³n¥¿¶ÂÅé");
         msg.setFont(font);
         msg.exec();
      }

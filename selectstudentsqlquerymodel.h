@@ -1,11 +1,12 @@
-﻿#ifndef SQLQUERYMODEL
-#define SQLQUERYMODEL
+﻿#ifndef SELECTSTUDENTSQLQUERYMODEL
+#define SELECTSTUDENTSQLQUERYMODEL
 
-#endif // SQLQUERYMODEL
+#endif // SELECTSTUDENTSQLQUERYMODEL
+
 #include <QtWidgets>
 #include <QSql>
 #include <QSqlQueryModel>
-class ChooseStudentToCourseCourseModel : public QSqlQueryModel
+class SelectStudentSqlQueryModel : public QSqlQueryModel
 {
     Q_OBJECT
 public:

@@ -1,4 +1,4 @@
-#ifndef DELETEBUTTON
+﻿#ifndef DELETEBUTTON
 #define DELETEBUTTON
 #include <QtWidgets>
 struct conditionset;

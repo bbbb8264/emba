@@ -1,4 +1,4 @@
-#ifndef ADDANEWSTUDENT
+﻿#ifndef ADDANEWSTUDENT
 #define ADDANEWSTUDENT
 
 #endif // ADDANEWSTUDENTD
@@ -10,6 +10,7 @@ class AddANewStudent : public QFrame
     Q_OBJECT
 public slots:
     void submited();
+    void deleteremind();
 public:
     AddANewStudent();
 private:
@@ -25,6 +26,7 @@ private:
     QFormLayout* formlayout;
     QWidget* formwidget;
     ChangePicture* picturewidget;
+    QLabel* remind;
     QWidget* mainpicturewidget;
     QVBoxLayout* mainpicturelayout;
     QLineEdit* studentnumberedit;

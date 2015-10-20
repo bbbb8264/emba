@@ -1,4 +1,4 @@
-#ifndef CONDITIONWIDGET
+﻿#ifndef CONDITIONWIDGET
 #define CONDITIONWIDGET
 #include <QtWidgets>
 struct conditionset;

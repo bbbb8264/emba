@@ -1,4 +1,4 @@
-#ifndef ACTIONSQLRELATIONMODEL
+﻿#ifndef ACTIONSQLRELATIONMODEL
 #define ACTIONSQLRELATIONMODEL
 
 #endif // ACTIONSQLRELATIONMODEL
@@ -19,6 +19,8 @@ public:
     Qt::ItemFlags flags(const QModelIndex & index) const Q_DECL_OVERRIDE;
     bool setData(const QModelIndex &index, const QVariant &value,int role = Qt::EditRole) Q_DECL_OVERRIDE;
     void resetcheckstate(int rowCount);
+    void uncheckall();
+    void selectall();
 public slots:
     void setcheck(const QModelIndex & index);
 };

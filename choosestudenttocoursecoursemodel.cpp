@@ -1,5 +1,5 @@
-#include "choosestudenttocoursecoursemodel.h"
+﻿#include "choosestudenttocoursecoursemodel.h"
 
 int ChooseStudentToCourseCourseModel::columnCount(const QModelIndex &parent) const{
-    return 5;
+    return 6;
 }

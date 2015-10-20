@@ -1,4 +1,4 @@
-/*#ifndef SEARCHSTUDENT
+#ifndef SEARCHSTUDENT
 #define SEARCHSTUDENT
 
 #endif // SEARCHSTUDENT
@@ -6,8 +6,7 @@
 #include <QSqlRelationalTableModel>
 struct conditionset;
 class MySqlRelationalTableModel;
-class ActionSqlRelationModel;
-class StudentSelect : public QWidget
+class SearchStudent : public QWidget
 {
     Q_OBJECT
 public slots:
@@ -25,11 +24,11 @@ private:
     bool makecondition(conditionset*& temp);
     QString maketotalfilter();
 public:
+    QTableView* tableview;
     QStringList conditions;
     QString filter;
     MySqlRelationalTableModel* model;
-    ActionSqlRelationModel* proxy;
-    StudentSelect();
+    SearchStudent();
     QHBoxLayout* mainlayout;
     QFrame* conditionwidget;
     QVBoxLayout* conditionlayout;
@@ -45,4 +44,4 @@ public:
     QWidget* resultaddwidget;
     QHBoxLayout* resultaddlayout;
     QWidget* resultshowwidget;
-};*/
+};

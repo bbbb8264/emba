@@ -5,33 +5,38 @@
 #include <string>
 #include <QtWidgets>
 #include <QtSql>
+#pragma execution_character_set("utf-8")
 #include <filedialog.h>
 AddANewStudent::AddANewStudent()
 {
     //setStyleSheet("border: 1px solid black");
     init();
-    setMaximumWidth(1100);
     setFrameShape(QFrame::Panel);
     setFrameShadow(QFrame::Raised);
     setLineWidth(1);
     msg.layout()->setMargin(20);
     msg.layout()->setSpacing(10);
     QFont font;
-    font.setFamily("å¾®è»Ÿæ­£é»‘é«”");
+    font.setFamily("·L³n¥¿¶ÂÅé");
     font.setPixelSize(15);
     msg.setFont(font);
     picturewidget->setAlignment(Qt::AlignTop);
     picturewidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    picturewidget->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+    picturewidget->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
     mainpicturelayout->addWidget(picturewidget);
+    mainpicturelayout->addWidget(remind);
     mainpicturewidget->setLayout(mainpicturelayout);
-    mainpicturewidget->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Minimum);
+    mainpicturewidget->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+    mainpicturewidget->setMinimumHeight(450);
     mainpicturelayout->setAlignment(Qt::AlignTop);
+    mainpicturelayout->setAlignment(remind,Qt::AlignHCenter);
+    remind->setStyleSheet("font-size:20px;font-family:Microsoft JhengHei");
+    connect(picturewidget,SIGNAL(inserted()),this,SLOT(deleteremind()));
     mainlayout->addWidget(mainpicturewidget);
     mainlayout->setMargin(0);
     setLayout(mainlayout);
-    studentnumberedit->setFixedWidth(200);
-    nameedit->setMaximumWidth(200);
+    studentnumberedit->setMinimumWidth(200);
+    nameedit->setMinimumWidth(200);
 
     genderlayout->addWidget(male);
     genderlayout->addWidget(female);
@@ -42,18 +47,25 @@ AddANewStudent::AddANewStudent()
     gendergroup->setLayout(genderlayout);
     gendergroup->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
 
-    contactformlayout->addRow("é›»è©±(æ—¥) :",telephoneday);
-    contactformlayout->addRow("é›»è©±(å¤œ) :",telephonenight);
-    contactformlayout->addRow("æ‰‹æ©Ÿè™Ÿç¢¼ :",mobile);
+    contactformlayout->addRow("¹q¸Ü(¤é) :",telephoneday);
+    contactformlayout->addRow("¹q¸Ü(©]) :",telephonenight);
+    contactformlayout->addRow("¤â¾÷¸¹½X :",mobile);
+
+    telephoneday->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    telephonenight->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    mobile->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
 
     contactgroup->setLayout(contactformlayout);
-    contactgroup->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+    contactgroup->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
 
-    companyformlayout->addRow("å…¬å¸åç¨± :",companyname);
-    companyformlayout->addRow("ç›®å‰è·ä½ :",companyposition);
+    companyformlayout->addRow("¤½¥q¦WºÙ :",companyname);
+    companyformlayout->addRow("¥Ø«eÂ¾¦ì :",companyposition);
+
+    companyname->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    companyposition->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
 
     companygroup->setLayout(companyformlayout);
-    companygroup->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+    companygroup->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
 
     submitlayout->setAlignment(Qt::AlignCenter);
     submitlayout->addWidget(submitbutton);
@@ -69,13 +81,18 @@ AddANewStudent::AddANewStudent()
     creditclasslayout->addWidget(creditclassbuttonyes);
     creditclasslayout->addWidget(creditclassbuttonno);
     creditclassgroup->setLayout(creditclasslayout);
-    creditclassgroup->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+    creditclassgroup->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
 
-    formlayout2->addRow("æ‰€åœ¨åœ°å€ :",direction);
-    formlayout2->addRow("ç•¢æ¥­å­¸æ ¡ :",graduateschool);
-    formlayout2->addRow("ç•¢æ¥­ç§‘ç³» :",graduatedepartment);
-    formlayout2->addRow("æ˜¯å¦åƒåŠ å­¸åˆ†ç­:",creditclassgroup);
+    formlayout2->addRow("©Ò¦b¦a°Ï :",direction);
+    formlayout2->addRow("²¦·~¾Ç®Õ :",graduateschool);
+    formlayout2->addRow("²¦·~¬ì¨t :",graduatedepartment);
+    formlayout2->addRow("¬O§_°Ñ¥[¾Ç¤À¯Z:",creditclassgroup);
     formlayout2->addRow(companygroup);
+
+    direction->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    graduateschool->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    graduatedepartment->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    creditclassgroup->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
 
     QWidget* raise = new QWidget;
     raise->setFixedHeight(100);
@@ -85,28 +102,40 @@ AddANewStudent::AddANewStudent()
     formlayout2->setLabelAlignment(Qt::AlignHCenter);
     formlayout2->setAlignment(Qt::AlignHCenter);
 
+    formwidget2->setMinimumHeight(470);
     formwidget2->setLayout(formlayout2);
 
-    formlayout->addRow("å‡†è€ƒè­‰è™Ÿç¢¼ :",ticketnumber);
-    formlayout->addRow("å­¸è™Ÿ :",studentnumberedit);
-    formlayout->addRow("å§“å :",nameedit);
-    formlayout->addRow("æ€§åˆ¥ :",gendergroup);
-    formlayout->addRow("ç”Ÿæ—¥ :",dateinput);
-    formlayout->addRow("è¯çµ¡åœ°å€ :",address);
-    formlayout->addRow("é›»å­éƒµä»¶ :",emailaddress);
-    formlayout->addRow("å ±è€ƒèº«åˆ† :",studentidentity);
+    formlayout->addRow("­ã¦ÒÃÒ¸¹½X :",ticketnumber);
+    formlayout->addRow("¾Ç¸¹ :",studentnumberedit);
+    formlayout->addRow("©m¦W :",nameedit);
+    formlayout->addRow("©Ê§O :",gendergroup);
+    formlayout->addRow("¥Í¤é :",dateinput);
+    formlayout->addRow("³q°T¦a§} :",address);
+    formlayout->addRow("¹q¤l¶l¥ó :",emailaddress);
+    formlayout->addRow("³ø¦Ò¨­¤À :",studentidentity);
     formlayout->addRow(contactgroup);
+    ticketnumber->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    studentnumberedit->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    nameedit->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    gendergroup->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    dateinput->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    address->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    emailaddress->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
+    studentidentity->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Maximum);
 
     formwidget->setLayout(formlayout);
+    formwidget->setMinimumHeight(470);
     formwidget->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
-    formwidget2->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Minimum);
+    formwidget2->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
     mainlayout->addWidget(formwidget);
     mainlayout->addWidget(formwidget2);
     mainlayout->setMargin(20);
-    mainlayout->setSpacing(50);
+    mainlayout->setSpacing(20);
+    setMaximumHeight(500);
+    setMaximumWidth(1200);
+    setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
     connect(submitbutton,SIGNAL(clicked()),this,SLOT(submited()));
     setformfont();
-    setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
 }
 void AddANewStudent::setting()
 {
@@ -119,18 +148,18 @@ void AddANewStudent::setformfont()
 {
     QFont* font = new QFont;
     font->setPixelSize(18);
-    font->setFamily("å¾®è»Ÿæ­£é»‘é«”");
+    font->setFamily("·L³n¥¿¶ÂÅé");
     formwidget->setFont(*font);
     formwidget2->setFont(*font);
 }
 void AddANewStudent::init()
 {
-    creditclassbuttonyes = new QRadioButton("æ˜¯");
-    creditclassbuttonno = new QRadioButton("å¦");
+    creditclassbuttonyes = new QRadioButton("¬O");
+    creditclassbuttonno = new QRadioButton("§_");
     creditclassgroup = new QGroupBox;
     creditclasslayout = new QHBoxLayout;
-    male = new QRadioButton("ç”·");
-    female = new QRadioButton("å¥³");
+    male = new QRadioButton("¨k");
+    female = new QRadioButton("¤k");
     genderlayout = new QHBoxLayout;
     mainlayout = new QHBoxLayout;
     submitwidget = new QWidget;
@@ -139,9 +168,9 @@ void AddANewStudent::init()
     formwidget2 = new QWidget;
     nameedit = new QLineEdit;
     gendergroup = new QGroupBox;
-    companygroup = new QGroupBox("ç›®å‰æœå‹™å–®ä½");
+    companygroup = new QGroupBox("¥Ø«eªA°È³æ¦ì");
     companyformlayout = new QFormLayout;
-    contactgroup = new QGroupBox("è¯çµ¡æ–¹å¼");
+    contactgroup = new QGroupBox("Ápµ¸¤è¦¡");
     contactformlayout = new QFormLayout;
     formwidget = new QWidget;
     formlayout = new QFormLayout;
@@ -165,35 +194,36 @@ void AddANewStudent::init()
     mainpicturelayout = new QVBoxLayout;
     mainpicturewidget = new QWidget;
     picturewidget = new ChangePicture;
-    submitbutton = new QPushButton("é€å‡º");
+    remind = new QLabel("ÂI¿ï¤W¶Ç¬Û¤ù");
+    submitbutton = new QPushButton("°e¥X");
 }
 void AddANewStudent::submited()
 {
     QSqlQuery query;
-    query.prepare( "insert into student values(:ticketnumber, :studentnumber, :direction, :studentidentity, :graduatelevel, :name, :picture, :gender, :address, :emailaddress, :birthday, :telephoneday, :telephonenight, :mobile, :graduateschool, :graduatedepartment, :companyname, :currentposition, :creditclass)" );
+    query.prepare( "insert into student (ticketnumber, studentnumber, direction, studentidentity, graduatelevel, name, picture, gender, address, emailaddress, birthday, telephoneday, telephonenight, mobile, graduateschool, graduatedepartment, companyname, currentposition, creditclass) values(:ticketnumber, :studentnumber, :direction, :studentidentity, :graduatelevel, :name, :picture, :gender, :address, :emailaddress, :birthday, :telephoneday, :telephonenight, :mobile, :graduateschool, :graduatedepartment, :companyname, :currentposition, :creditclass)" );
     QString mentionstring = "";
     if(ticketnumber->text().isEmpty()){
-        msg.setWindowTitle("è­¦å‘Š");
+        msg.setWindowTitle("Äµ§i");
         msg.setIcon(QMessageBox::Critical);
-        msg.setText("å‡†è€ƒè­‰è™Ÿç¢¼ç‚ºå¿…å¡«é …ç›®");
+        msg.setText("­ã¦ÒÃÒ¸¹½X¬°¥²¶ñ¶µ¥Ø");
         msg.exec();
         return;
     }else{
         QString ticket = ticketnumber->text().toUpper();
         QSqlQuery check("select * from student where ticketnumber = '"+ticket+"'");
         if(check.size()){
-            msg.setWindowTitle("è­¦å‘Š");
+            msg.setWindowTitle("Äµ§i");
             msg.setIcon(QMessageBox::Critical);
-            msg.setText("è³‡æ–™åº«å·²æœ‰è©²å‡†è€ƒè­‰è™Ÿç¢¼");
+            msg.setText("¸ê®Æ®w¤w¦³¸Ó­ã¦ÒÃÒ¸¹½X");
             msg.exec();
             return;
         }
         query.bindValue(":ticketnumber",ticketnumber->text());
     }
     if(studentnumberedit->text().isEmpty()){
-        msg.setWindowTitle("è­¦å‘Š");
+        msg.setWindowTitle("Äµ§i");
         msg.setIcon(QMessageBox::Critical);
-        msg.setText("å­¸è™Ÿç‚ºå¿…å¡«é …ç›®");
+        msg.setText("¾Ç¸¹¬°¥²¶ñ¶µ¥Ø");
         msg.exec();
         return;
     }
@@ -201,32 +231,32 @@ void AddANewStudent::submited()
         QString studentnumber = studentnumberedit->text().toUpper();
         QSqlQuery check("select * from student where studentnumber = '"+studentnumber+"'");
         if(check.size()){
-            msg.setWindowTitle("è­¦å‘Š");
+            msg.setWindowTitle("Äµ§i");
             msg.setIcon(QMessageBox::Critical);
-            msg.setText("è³‡æ–™åº«å·²æœ‰è©²å­¸è™Ÿ");
+            msg.setText("¸ê®Æ®w¤w¦³¸Ó¾Ç¸¹");
             msg.exec();
             return;
         }
         if(studentnumber.left(2) != "R0"){
-            msg.setWindowTitle("è­¦å‘Š");
+            msg.setWindowTitle("Äµ§i");
             msg.setIcon(QMessageBox::Critical);
-            msg.setText("å­¸è™Ÿå‰å…©ç¢¼å¿…ç‚ºR0");
+            msg.setText("¾Ç¸¹«e¨â½X¥²¬°R0");
             msg.exec();
             return;
         }
         if(studentnumber.left(5).right(3) != "000" && studentnumber.left(5).right(3).toInt() == 0){
-            msg.setWindowTitle("è­¦å‘Š");
+            msg.setWindowTitle("Äµ§i");
             msg.setIcon(QMessageBox::Critical);
-            msg.setText("ç„¡æ³•å¾å­¸è™Ÿæå–å‡ºç•¢æ¥­å¹´åº¦(ä¸‰åˆ°äº”ç¢¼ä¸æ˜¯æ•¸å­—?)");
+            msg.setText("µLªk±q¾Ç¸¹´£¨ú¥X²¦·~¦~«×(¤T¨ì¤­½X¤£¬O¼Æ¦r?)");
             msg.exec();
             return;
         }else{
             int graduate = studentnumber.left(5).right(3).toInt();
             graduate -= 597;
             if(graduate < 50){
-                msg.setWindowTitle("è­¦å‘Š");
+                msg.setWindowTitle("Äµ§i");
                 msg.setIcon(QMessageBox::Critical);
-                msg.setText("å¾å­¸è™Ÿæå–çš„ç•¢æ¥­å¹´åº¦éŒ¯èª¤");
+                msg.setText("±q¾Ç¸¹´£¨úªº²¦·~¦~«×¿ù»~");
                 msg.exec();
                 return;
             }
@@ -237,70 +267,70 @@ void AddANewStudent::submited()
     if(nameedit->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "å§“å" ;
+        mentionstring += "©m¦W" ;
     }else{
         query.bindValue(":name",nameedit->text());
     }
     if(direction->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "æ‰€åœ¨åœ°å€" ;
+        mentionstring += "©Ò¦b¦a°Ï" ;
     }else{
         query.bindValue(":direction",direction->text());
     }
     if(address->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "é€šè¨Šåœ°å€" ;
+        mentionstring += "³q°T¦a§}" ;
     }else{
         query.bindValue(":address",address->text());
     }
     if(emailaddress->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "é›»å­éƒµä»¶" ;
+        mentionstring += "¹q¤l¶l¥ó" ;
     }else{
         query.bindValue(":emailaddress",emailaddress->text());
     }
     if(telephoneday->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "é›»è©±(æ—¥)" ;
+        mentionstring += "¹q¸Ü(¤é)" ;
     }else{
         query.bindValue(":telephoneday",telephoneday->text());
     }
     if(telephonenight->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "é›»è©±(å¤œ)" ;
+        mentionstring += "¹q¸Ü(©])" ;
     }else{
         query.bindValue(":telephonenight",telephonenight->text());
     }
     if(mobile->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "æ‰‹æ©Ÿé›»è©±" ;
+        mentionstring += "¤â¾÷¹q¸Ü" ;
     }else{
         query.bindValue(":mobile",mobile->text());
     }
     if(studentidentity->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "å ±è€ƒèº«åˆ†" ;
+        mentionstring += "³ø¦Ò¨­¤À" ;
     }else{
         query.bindValue(":studentidentity",studentidentity->text());
     }
     if(graduateschool->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "ç•¢æ¥­å­¸æ ¡" ;
+        mentionstring += "²¦·~¾Ç®Õ" ;
     }else{
         query.bindValue(":graduateschool",graduateschool->text());
     }
     if(graduatedepartment->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "ç•¢æ¥­ç§‘ç³»" ;
+        mentionstring += "²¦·~¬ì¨t" ;
     }else{
         query.bindValue(":graduatedepartment",graduatedepartment->text());
     }
@@ -312,19 +342,19 @@ void AddANewStudent::submited()
     }else{
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "å€‹äººç…§ç‰‡" ;
+        mentionstring += "­Ó¤H·Ó¤ù" ;
     }
 
     if(male->isChecked() || female->isChecked()){
         if(male->isChecked()){
-            query.bindValue(":gender","ç”·");
+            query.bindValue(":gender","¨k");
         }else{
-            query.bindValue(":gender","å¥³");
+            query.bindValue(":gender","¤k");
         }
     }else{
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "æ€§åˆ¥" ;
+        mentionstring += "©Ê§O" ;
     }
     if(creditclassbuttonyes->isChecked() || creditclassbuttonyes->isChecked()){
         if(creditclassbuttonyes->isChecked()){
@@ -335,72 +365,72 @@ void AddANewStudent::submited()
     }else{
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "å­¸åˆ†ç­é¸æ“‡" ;
+        mentionstring += "¾Ç¤À¯Z¿ï¾Ü" ;
     }
     query.bindValue(":birthday",dateinput->text());
 
     if(companyname->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "å…¬å¸åç¨±" ;
+        mentionstring += "¤½¥q¦WºÙ" ;
     }else{
         query.bindValue(":companyname",companyname->text());
     }
     if(companyposition->text().isEmpty()){
         if(!mentionstring.isEmpty())
             mentionstring += "\n";
-        mentionstring += "å…¬å¸é›»è©±" ;
+        mentionstring += "¤½¥q¹q¸Ü" ;
     }else{
         query.bindValue(":currentposition",companyposition->text());
     }
     if(mentionstring.isEmpty()){
         if(query.exec()){
             QImage icon;
-            icon.load("D:/right.png");
+            icon.load("right.png");
             icon = icon.scaledToWidth(50);
-            msg.setWindowTitle("å®Œæˆ");
+            msg.setWindowTitle("§¹¦¨");
             msg.setIconPixmap(QPixmap::fromImage(icon));
-            msg.setText("è³‡æ–™å·²å¯«å…¥");
+            msg.setText("¸ê®Æ¤w¼g¤J");
             msg.exec();
         }else{
             QImage icon;
-            icon.load("D:/error.png");
+            icon.load("error.png");
             icon = icon.scaledToWidth(50);
-            msg.setWindowTitle("éŒ¯èª¤");
+            msg.setWindowTitle("¿ù»~");
             msg.setIconPixmap(QPixmap::fromImage(icon));
-            msg.setText("è³‡æ–™å¯«å…¥å¤±æ•—");
+            msg.setText("¸ê®Æ¼g¤J¥¢±Ñ");
             msg.exec();
         }
     }else{
         QMessageBox questmsg;
-        questmsg.setWindowTitle("æç¤º");
-        questmsg.setText("ä»¥ä¸‹ç‚ºé‚„æ²’å¡«å…¥çš„é …ç›®");
-        questmsg.setInformativeText(mentionstring+"\n\nè«‹å•ä»è¦è¼¸å…¥åˆ°è³‡æ–™åº«å—");
+        questmsg.setWindowTitle("´£¥Ü");
+        questmsg.setText("¥H¤U¬°ÁÙ¨S¶ñ¤Jªº¶µ¥Ø");
+        questmsg.setInformativeText(mentionstring+"\n\n½Ğ°İ¤´­n¿é¤J¨ì¸ê®Æ®w¶Ü");
         questmsg.setIcon(QMessageBox::Warning);
         questmsg.layout()->setMargin(15);
         questmsg.layout()->setSpacing(10);
         QFont font;
         font.setPixelSize(15);
-        font.setFamily("å¾®è»Ÿæ­£é»‘é«”");
+        font.setFamily("·L³n¥¿¶ÂÅé");
         questmsg.setFont(font);
         questmsg.addButton(QMessageBox::Yes);
         questmsg.addButton(QMessageBox::No);
         if(questmsg.exec() == QMessageBox::Yes){
             if(query.exec()){
                 QImage icon;
-                icon.load("D:/right.png");
+                icon.load("right.png");
                 icon = icon.scaledToWidth(50);
-                msg.setWindowTitle("å®Œæˆ");
+                msg.setWindowTitle("§¹¦¨");
                 msg.setIconPixmap(QPixmap::fromImage(icon));
-                msg.setText("è³‡æ–™å·²å¯«å…¥");
+                msg.setText("¸ê®Æ¤w¼g¤J");
                 msg.exec();
             }else{
                 QImage icon;
-                icon.load("D:/error.png");
+                icon.load("error.png");
                 icon = icon.scaledToWidth(50);
-                msg.setWindowTitle("éŒ¯èª¤");
+                msg.setWindowTitle("¿ù»~");
                 msg.setIconPixmap(QPixmap::fromImage(icon));
-                msg.setText("è³‡æ–™å¯«å…¥å¤±æ•—");
+                msg.setText("¸ê®Æ¼g¤J¥¢±Ñ");
                 msg.exec();
             }
         }
@@ -422,3 +452,6 @@ void AddANewStudent::submited()
     picturewidget->setPixmap(QPixmap::fromImage(picturewidget->img));*/
 }
 
+void AddANewStudent::deleteremind(){
+    remind->setText("");
+}

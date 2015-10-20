@@ -1,4 +1,4 @@
-#ifndef FILEDIALOG
+﻿#ifndef FILEDIALOG
 #define FILEDIALOG
 
 #endif // FILEDIALOG
