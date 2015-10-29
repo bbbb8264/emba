@@ -1,7 +1,7 @@
 #include "studentpersonalwindow.h"
 #include "studentpersonalwindowmenu.h"
 #include "studentpersonalwindowbrowsedata.h"
-#include "studentpersonalwindowmenubutton.h"
+#include "personalwindowmenubutton.h"
 #include "studentpersonalwindowmodifydata.h"
 #include "studentpersonalwindowcoursedata.h"
 #pragma execution_character_set("utf-8")

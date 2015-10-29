@@ -1,29 +1,28 @@
-#include "studentpersonalwindowcoursedata.h"
+#include "teacherpersonalwindowcoursedata.h"
 #pragma execution_character_set("utf-8")
-void StudentPersonalWindowCourseData::init(){
+void TeacherPersonalWindowCourseData::init(){
     mainlayout = new QVBoxLayout;
     backbutton = new QPushButton("返回");
 }
-StudentPersonalWindowCourseData::StudentPersonalWindowCourseData(QString studentnumber){
+
+TeacherPersonalWindowCourseData::TeacherPersonalWindowCourseData(QString teachernumber){
     init();
 
-    this->studentnumber = studentnumber;
-    query.prepare("select count(*) from choosecourse, teacher, courseinformation where courseinformation.coursenumber = choosecourse.coursenumber and teacher.teachernumber = courseinformation.teachernumber and choosecourse.studentnumber = :studentnumber");
-    query.bindValue(":studentnumber",studentnumber);
+    this->teachernumber = teachernumber;
+    query.prepare("select count(*) from courseinformation where courseinformation.teachernumber = :teachernumber");
+    query.bindValue(":teachernumber",teachernumber);
     query.exec();
     query.next();
-    qDebug() << studentnumber;
-    qDebug() << QString::number(query.value(0).toInt());
     if(query.value(0).toInt()){
-        QLabel* title = new QLabel("以下為你曾經修過的課");
+        QLabel* title = new QLabel("以下為你曾經開過的課程");
         title->setStyleSheet("font-size:24px;font-family:Microsoft JhengHei");
         QSqlQueryModel* model = new QSqlQueryModel;
-        model->setQuery("select courseinformation.coursenumber , courseinformation.coursename , courseinformation.year , courseinformation.semester , teacher.teachername , courseinformation.credit from choosecourse, teacher, courseinformation where courseinformation.coursenumber = choosecourse.coursenumber and teacher.teachernumber = courseinformation.teachernumber and choosecourse.studentnumber = '"+studentnumber+"'");
+        model->setQuery("select coursenumber, coursetypename, coursename , year , semester , credit from courseinformation,coursetype where courseinformation.teachernumber = '"+teachernumber+"' and coursetype.coursetypenumber = courseinformation.coursetype");
         model->setHeaderData(0, Qt::Horizontal, QObject::tr("課程編號"));
-        model->setHeaderData(1, Qt::Horizontal, QObject::tr("課程名稱"));
-        model->setHeaderData(2, Qt::Horizontal, QObject::tr("學年度"));
-        model->setHeaderData(3, Qt::Horizontal, QObject::tr("學期"));
-        model->setHeaderData(4, Qt::Horizontal, QObject::tr("老師名稱"));
+        model->setHeaderData(1, Qt::Horizontal, QObject::tr("課程類型"));
+        model->setHeaderData(2, Qt::Horizontal, QObject::tr("課程名稱"));
+        model->setHeaderData(3, Qt::Horizontal, QObject::tr("學年度"));
+        model->setHeaderData(4, Qt::Horizontal, QObject::tr("學期"));
         model->setHeaderData(5, Qt::Horizontal, QObject::tr("學分數"));
         QTableView* tableview = new QTableView;
         tableview->setModel(model);
@@ -33,14 +32,17 @@ StudentPersonalWindowCourseData::StudentPersonalWindowCourseData(QString student
         headerview->setMinimumHeight(30);
         tableview->verticalHeader()->setStyleSheet("QHeaderView::section {background-color: #808080;color: white;padding-left: 4px;}");
         tableview->setStyleSheet("background-color:#fEfefe;font-size:12px;font-family:Microsoft JhengHei");
+        tableview->setMinimumWidth(750);
+        tableview->setMinimumHeight(350);
 
         mainlayout->addWidget(title);
         mainlayout->addWidget(tableview);
         mainlayout->setAlignment(title,Qt::AlignCenter);
         mainlayout->setMargin(30);
         mainlayout->setSpacing(30);
+        setMaximumWidth(800);
     }else{
-        QLabel* title = new QLabel("你目前還沒有新增任何課程");
+        QLabel* title = new QLabel("你目前還沒有開任何課程");
         title->setStyleSheet("font-size:30px;font-family:Microsoft JhengHei");
         title->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
         title->setMinimumHeight(200);
@@ -48,6 +50,7 @@ StudentPersonalWindowCourseData::StudentPersonalWindowCourseData(QString student
         mainlayout->setAlignment(title,Qt::AlignHCenter);
         mainlayout->addWidget(title);
         mainlayout->setMargin(50);
+        setMaximumWidth(800);
     }
     mainlayout->addWidget(backbutton);
     backbutton->setStyleSheet("font-size:18px;");
@@ -57,7 +60,6 @@ StudentPersonalWindowCourseData::StudentPersonalWindowCourseData(QString student
     setStyleSheet("background-color:#fbfbfb;font-size:12px;font-family:Microsoft JhengHei");
     //setStyleSheet("border: 1px solid black");
     setLayout(mainlayout);
-    setMaximumWidth(800);
     setFrameShape(QFrame::Panel);
     setFrameShadow(QFrame::Raised);
 }

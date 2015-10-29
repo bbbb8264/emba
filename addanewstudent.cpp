@@ -14,8 +14,8 @@ AddANewStudent::AddANewStudent()
     setFrameShape(QFrame::Panel);
     setFrameShadow(QFrame::Raised);
     setLineWidth(1);
-    msg.layout()->setMargin(20);
-    msg.layout()->setSpacing(10);
+    msg.layout()->setMargin(50);
+    msg.layout()->setSpacing(20);
     QFont font;
     font.setFamily("微軟正黑體");
     font.setPixelSize(15);
@@ -135,6 +135,7 @@ AddANewStudent::AddANewStudent()
     setMaximumWidth(1200);
     setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
     connect(submitbutton,SIGNAL(clicked()),this,SLOT(submited()));
+    setStyleSheet("background-color:#fbfbfb;font-size:18px;font-family:Microsoft JhengHei");
     setformfont();
 }
 void AddANewStudent::setting()
@@ -167,6 +168,7 @@ void AddANewStudent::init()
     formlayout2 = new QFormLayout;
     formwidget2 = new QWidget;
     nameedit = new QLineEdit;
+    nameedit->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     gendergroup = new QGroupBox;
     companygroup = new QGroupBox("目前服務單位");
     companyformlayout = new QFormLayout;
@@ -175,22 +177,38 @@ void AddANewStudent::init()
     formwidget = new QWidget;
     formlayout = new QFormLayout;
     studentnumberedit = new QLineEdit;
+    studentnumberedit->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     formwidget = new QWidget;
     formlayout = new QFormLayout;
     companyname = new QLineEdit;
+    companyname->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     companyposition = new QLineEdit;
+    companyposition->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     mobile = new QLineEdit;
+    mobile->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     telephoneday = new QLineEdit;
+    telephoneday->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     telephonenight = new QLineEdit;
+    telephonenight->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     direction = new QLineEdit;
+    direction->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     ticketnumber = new QLineEdit;
+    ticketnumber->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     studentidentity = new QLineEdit;
+    studentidentity->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     graduatelevel = new QLineEdit;
+    graduatelevel->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     address = new QLineEdit;
+    address->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     emailaddress = new QLineEdit;
+    emailaddress->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     graduateschool = new QLineEdit;
+    graduateschool->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     graduatedepartment = new QLineEdit;
+    graduatedepartment->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     dateinput = new QDateEdit;
+    dateinput->setMinimumHeight(32);
+    dateinput->setStyleSheet("background-color:#ffffff;font-size:18px;font-family:Microsoft JhengHei");
     mainpicturelayout = new QVBoxLayout;
     mainpicturewidget = new QWidget;
     picturewidget = new ChangePicture;

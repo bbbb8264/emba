@@ -38,8 +38,8 @@ SelectStudent::SelectStudent(QStringList course,QStringList coursename)
     //setStyleSheet("border: 1px solid black");
     init();
     setfont();
-    msg.layout()->setMargin(20);
-    msg.layout()->setSpacing(10);
+    msg.layout()->setMargin(50);
+    msg.layout()->setSpacing(20);
     QFont font;
     font.setFamily("·L³n¥¿¶ÂÅé");
     font.setPixelSize(15);
@@ -462,7 +462,7 @@ void SelectStudent::finish(){
                 emit cleanPrevious();
             }else{
                 QImage icon;
-                icon.load("D:/error.png");
+                icon.load("error.png");
                 icon = icon.scaledToWidth(50);
                 msg.setWindowTitle("¿ù»~");
                 msg.setIconPixmap(QPixmap::fromImage(icon));

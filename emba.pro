@@ -29,7 +29,15 @@ SOURCES += main.cpp \
     studentpersonalwindowmenubutton.cpp \
     studentpersonalwindowbrowsedata.cpp \
     studentpersonalwindowmodifydata.cpp \
-    studentpersonalwindowcoursedata.cpp
+    studentpersonalwindowcoursedata.cpp \
+    addanewcourse.cpp \
+    addanewteacher.cpp \
+    searchteacher.cpp \
+    teacherpersonalwindow.cpp \
+    teacherpersonalwindowmenu.cpp \
+    teacherpersonalwindowmodifydata.cpp \
+    teacherpersonalwindowcoursedata.cpp \
+    addanewthesis.cpp
         mainwindow.cpp
 HEADERS  += mainwindow.h \
     addanewstudent.h \
@@ -47,8 +55,15 @@ HEADERS  += mainwindow.h \
     selectstudentsqlquerymodel.h \
     studentpersonalwindow.h \
     studentpersonalwindowmenu.h \
-    studentpersonalwindowmenubutton.h \
     studentpersonalwindowbrowsedata.h \
     studentpersonalwindowmodifydata.h \
     studentpersonalwindowcoursedata.h \
-    addanewcourse.h
+    addanewcourse.h \
+    addanewteacher.h \
+    searchteacher.h \
+    teacherpersonalwindow.h \
+    teacherpersonalwindowmenu.h \
+    personalwindowmenubutton.h \
+    teacherpersonalwindowmodifydata.h \
+    teacherpersonalwindowcoursedata.h \
+    addanewthesis.h

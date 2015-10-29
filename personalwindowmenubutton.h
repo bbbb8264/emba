@@ -4,7 +4,7 @@
 #endif // STUDENTPERSONALWINDOWMENUBUTTON
 
 #include <QtWidgets>
-class StudentPersonalWindowMenuButton : public QLabel{
+class PersonalWindowMenuButton : public QLabel{
     Q_OBJECT
     void mousePressEvent(QMouseEvent * ev) override;
     void mouseReleaseEvent(QMouseEvent * ev) override;

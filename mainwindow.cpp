@@ -1,42 +1,35 @@
 #include "mainwindow.h"
-#include <QtWidgets>
-#include <QtSql>
 #include "addanewstudent.h"
+#include "addanewcourse.h"
 #include "searchstudent.h"
 #include "studentpersonalwindow.h"
 #include "addstudenttocourse.h"
 #include "selectstudent.h"
 #include "MySqlRelationalTableModel.h"
 #include "studentpersonalwindowmenu.h"
-#include "studentpersonalwindowmenubutton.h"
+#include "teacherpersonalwindow.h"
+#include "teacherpersonalwindowmenu.h"
+#include "personalwindowmenubutton.h"
+#include "searchteacher.h"
+#include "addanewteacher.h"
+#include "addanewthesis.h"
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrinter>
 #pragma execution_character_set("utf-8")
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    init();
+    /*init();
     setmenu();
     setWindowTitle("EMBA");
     setDB();
-    StudentPersonalWindow* a = new StudentPersonalWindow("R0777");
-    setCentralWidget(a);
-    //menu->addMenu(new;QMenu("主選單"));
-    /*menu* v = new menu(this);
-    setCentralWidget(v);
-    statusBar();
-    setWindowTitle(tr("EMBA管理系統"));
-    menuBar()->addMenu(tr(" 檔案 "));
-    main1 = new QLabel(tr("報考"));
-    main1->setFixedSize(100,100);
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setMargin(5);
-    layout->addWidget(main1);
-    wid->setLayout(layout);
-    setDB();
-    query("show tables;");
-    query.next();
-    main1->setText(query.value(0).toString());*/
+    QWidget* wid = new QWidget;
+    QHBoxLayout* lay = new QHBoxLayout;
+    AddANewThesis* wid2 = new AddANewThesis;
+    lay->addWidget(wid2);
+    wid->setLayout(lay);
+    setCentralWidget(wid);*/
 }
 void MainWindow::setDB(){
     QSqlDatabase DB = QSqlDatabase::addDatabase("QMYSQL");
@@ -63,14 +56,23 @@ void MainWindow::setmenu()
     action = new QAction("新增一筆學生資料",this);
     connect(action,SIGNAL(triggered()),this,SLOT(openaddanewstudent()));
     studentdatamenu->addAction(action);
-    action = new QAction("查詢單一學生資料",this);
+    action = new QAction("查詢學生資料",this);
     connect(action,SIGNAL(triggered()),this,SLOT(opensearchstudent()));
-    studentsearchmenu->addAction(action);
-    action = new QAction("新增學生至課程當中",this);
+    studentdatamenu->addAction(action);
+    action = new QAction("新增一筆課程資料",this);
+    connect(action,SIGNAL(triggered()),this,SLOT(openaddanewcourse()));
+    coursemenu->addAction(action);
+    action = new QAction("將學生加入至課程當中",this);
     connect(action,SIGNAL(triggered()),this,SLOT(openstudenttocourse()));
     coursemenu->addAction(action);
+    action = new QAction("新增一筆老師資料",this);
+    connect(action,SIGNAL(triggered()),this,SLOT(openaddanewteacher()));
+    teachermenu->addAction(action);
+    action = new QAction("查詢老師資料",this);
+    connect(action,SIGNAL(triggered()),this,SLOT(opensearchteacher()));
+    teachermenu->addAction(action);
     mainmenu->addMenu(studentdatamenu);
-    mainmenu->addMenu(studentsearchmenu);
+    mainmenu->addMenu(teachermenu);
     mainmenu->addMenu(coursemenu);
     mainmenubar->addMenu(mainmenu);
     setMenuBar(mainmenubar);
@@ -82,16 +84,16 @@ void MainWindow::init()
     studentdatamenu = new QMenu("維護學生資料");
     studentsearchmenu = new QMenu("查詢學生資訊");
     coursemenu = new QMenu("維護課程資料");
+    teachermenu = new QMenu("維護老師資料");
 }
 void MainWindow::opensearchstudent()
 {
-    isStudentToCourseOpened = false;
-    isStudentToCourse2Opened = false;
     if(isSearchStudentOpened){
         searchStudentStackedWidget->setCurrentIndex(0);
     }else{
         isSearchStudentOpened = true;
         searchStudentStackedWidget = new QStackedWidget;
+        connect(searchStudentStackedWidget,SIGNAL(destroyed()),this,SLOT(setSearchStudentOpenedToFalse()));
         openedSearchStudent = new SearchStudent;
         searchStudentStackedWidget->addWidget(openedSearchStudent);
         connect(openedSearchStudent->tableview,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(opensearchstudent2(QModelIndex)));
@@ -100,7 +102,6 @@ void MainWindow::opensearchstudent()
 }
 
 void MainWindow::opensearchstudent2(QModelIndex index){
-    qDebug() << openedSearchStudent->model->data(openedSearchStudent->model->index(index.row(),1)).toString();
     int row = index.row();
     QString studentnumber = openedSearchStudent->model->data(openedSearchStudent->model->index(row,1)).toString();
     if(isSearchStudent2Opened){
@@ -117,10 +118,6 @@ void MainWindow::opensearchstudent2(QModelIndex index){
 
 void MainWindow::openaddanewstudent()
 {
-    isStudentToCourseOpened = false;
-    isStudentToCourse2Opened = false;
-    isSearchStudentOpened = false;
-    isSearchStudent2Opened = false;
     AddANewStudent* wid = new AddANewStudent;
     QWidget* wi = new QWidget;
     QHBoxLayout* lay = new QHBoxLayout;
@@ -131,13 +128,12 @@ void MainWindow::openaddanewstudent()
 }
 void MainWindow::openstudenttocourse()
 {
-    isSearchStudentOpened = false;
-    isSearchStudent2Opened = false;
     if(isStudentToCourseOpened){
         studentToCourseStackedWidget->setCurrentIndex(0);
     }else{
         isStudentToCourseOpened = true;
         studentToCourseStackedWidget = new QStackedWidget;
+        connect(studentToCourseStackedWidget,SIGNAL(destroyed()),this,SLOT(setStudentToCourseOpenedToFalse()));
         openedStudentToCourse = new AddStudentToCourse;
         studentToCourseStackedWidget->addWidget(openedStudentToCourse);
         connect(openedStudentToCourse,SIGNAL(submit(QStringList,QStringList)),this,SLOT(openstudenttocourse2(QStringList,QStringList)));
@@ -159,7 +155,54 @@ void MainWindow::openstudenttocourse2(QStringList course,QStringList coursename)
     studentToCourseStackedWidget->setCurrentIndex(1);
 }
 void MainWindow::cleanStudentToCourseOpened(){
+    setCentralWidget(new QWidget);
+}
+
+void MainWindow::openaddanewcourse(){
+    AddANewCourse* wid = new AddANewCourse;
+    setCentralWidget(wid);
+}
+void MainWindow::openaddanewteacher(){
+    AddANewTeacher* wid = new AddANewTeacher;
+    setCentralWidget(wid);
+}
+void MainWindow::opensearchteacher(){
+    if(isSearchTeacherOpened){
+        searchTeacherStackedWidget->setCurrentIndex(0);
+    }else{
+        isSearchTeacherOpened = true;
+        searchTeacherStackedWidget = new QStackedWidget;
+        connect(searchTeacherStackedWidget,SIGNAL(destroyed()),this,SLOT(setSearchTeacherOpenedToFalse()));
+        openedSearchTeacher = new SearchTeacher;
+        searchTeacherStackedWidget->addWidget(openedSearchTeacher);
+        connect(openedSearchTeacher->tableview,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(opensearchteacher2(QModelIndex)));
+        setCentralWidget(searchTeacherStackedWidget);
+    }
+}
+void MainWindow::opensearchteacher2(QModelIndex index){
+    int row = index.row();
+    QString teachernumber = openedSearchTeacher->model->data(openedSearchTeacher->model->index(row,0)).toString();
+    if(isSearchTeacher2Opened){
+        searchTeacherStackedWidget->removeWidget(openedSearchTeacher2);
+        delete openedSearchTeacher2;
+    }else{
+        isSearchTeacher2Opened = true;
+    }
+    openedSearchTeacher2 = new TeacherPersonalWindow(teachernumber);
+    connect(openedSearchTeacher2->controllmenu->backlabel,SIGNAL(clicked()),this,SLOT(opensearchteacher()));
+    searchTeacherStackedWidget->addWidget(openedSearchTeacher2);
+    searchTeacherStackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::setStudentToCourseOpenedToFalse(){
     isStudentToCourseOpened = false;
     isStudentToCourse2Opened = false;
-    setCentralWidget(new QWidget);
+}
+void MainWindow::setSearchStudentOpenedToFalse(){
+    isSearchStudentOpened = false;
+    isSearchStudent2Opened = false;
+}
+void MainWindow::setSearchTeacherOpenedToFalse(){
+    isSearchTeacherOpened = false;
+    isSearchTeacher2Opened = false;
 }

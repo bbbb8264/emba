@@ -13,29 +13,29 @@ void StudentPersonalWindowModiyfyData::init(){
     mainlayout = new QVBoxLayout;
     ticketnumberinput = new QLabel;
     studentnumberinput = new QLabel;
-    locationinput = new QTextEdit;
-    studentidentityinput = new QTextEdit;
+    locationinput = new QLineEdit;
+    studentidentityinput = new QLineEdit;
     graduatelevel = new QLabel;
-    nameinput = new QTextEdit;
+    nameinput = new QLineEdit;
     pictureinput = new ChangePicture;
     gendergroup = new QGroupBox;
     genderlayout = new QHBoxLayout;
     malebutton = new QRadioButton("男");
     femalebutton = new QRadioButton("女");
-    addressinput = new QTextEdit;
-    emailinput = new QTextEdit;
+    addressinput = new QLineEdit;
+    emailinput = new QLineEdit;
     birthdayinput = new QDateEdit;
     contactgroup = new QGroupBox("聯絡方式");
     contactlayout = new QFormLayout;
-    telephonedayinput = new QTextEdit;
-    telephonenightinput = new QTextEdit;
-    mobileinput = new QTextEdit;
-    graduateschoolinput = new QTextEdit;
-    graduatedepartmentinput = new QTextEdit;
+    telephonedayinput = new QLineEdit;
+    telephonenightinput = new QLineEdit;
+    mobileinput = new QLineEdit;
+    graduateschoolinput = new QLineEdit;
+    graduatedepartmentinput = new QLineEdit;
     companygroup = new QGroupBox("服務單位");
     companylayout = new QFormLayout;
-    companynameinput = new QTextEdit;
-    companypositioninput = new QTextEdit;
+    companynameinput = new QLineEdit;
+    companypositioninput = new QLineEdit;
     creditgroup = new QGroupBox;
     creditlayout = new QHBoxLayout;
     credityes = new QRadioButton("是");
@@ -58,8 +58,8 @@ StudentPersonalWindowModiyfyData::StudentPersonalWindowModiyfyData(QString stude
     query.exec();
     query.next();
 
-    msg.layout()->setMargin(20);
-    msg.layout()->setSpacing(10);
+    msg.layout()->setMargin(50);
+    msg.layout()->setSpacing(20);
     QFont font;
     font.setFamily("微軟正黑體");
     font.setPixelSize(15);
@@ -175,7 +175,7 @@ StudentPersonalWindowModiyfyData::StudentPersonalWindowModiyfyData(QString stude
     setLayout(mainlayout);
     setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
 }
-void StudentPersonalWindowModiyfyData::setTextEditSize(QTextEdit* textedit){
+void StudentPersonalWindowModiyfyData::setTextEditSize(QLineEdit* textedit){
     textedit->setFixedHeight(36);
     textedit->setStyleSheet("background-color:#ffffff;font-size:20px;font-family:Microsoft JhengHei");
 }
@@ -227,23 +227,23 @@ void StudentPersonalWindowModiyfyData::submitdata(){
     bool submitstudentidentity = false;
     submit.prepare("update student set birthday = :birthday , name = :name , direction = :location , studentidentity = :studentidentity , picture = :picture , gender = :gender , address = :address , emailaddress = :email , telephoneday = :telephoneday , telephonenight = :telephonenight , mobile = :mobile , graduateschool = :graduateschool , graduatedepartment = :graduatedepartment , companyname = :companyname , currentposition = :currentposition , creditclass = :credit where studentnumber = :studentnumber");
     submit.bindValue(":studentnumber",studentnumber);
-    if(nameinput->toPlainText().isEmpty()){
+    if(nameinput->text().isEmpty()){
         mentionstring += "姓名\n";
     }else{
-        submit.bindValue(":name",nameinput->toPlainText());
+        submit.bindValue(":name",nameinput->text());
         submitname = true;
     }
-    if(locationinput->toPlainText().isEmpty()){
+    if(locationinput->text().isEmpty()){
         mentionstring += "所在地區\n";
     }else{
-        submit.bindValue(":location",locationinput->toPlainText());
+        submit.bindValue(":location",locationinput->text());
     }
     submit.bindValue(":birthday",birthdayinput->text());
-    if(studentidentityinput->toPlainText().isEmpty()){
+    if(studentidentityinput->text().isEmpty()){
         mentionstring += "報考身分別\n";
     }else{
         submitstudentidentity = true;
-        submit.bindValue(":studentidentity",studentidentityinput->toPlainText());
+        submit.bindValue(":studentidentity",studentidentityinput->text());
     }
     if(pictureinput->pictureinsert){
         QByteArray byteArray;
@@ -263,50 +263,50 @@ void StudentPersonalWindowModiyfyData::submitdata(){
         submit.bindValue(":gender","女");
         submitgender = true;
     }
-    if(addressinput->toPlainText().isEmpty()){
+    if(addressinput->text().isEmpty()){
         mentionstring += "通訊地址\n";
     }else{
-        submit.bindValue(":address",addressinput->toPlainText());
+        submit.bindValue(":address",addressinput->text());
     }
-    if(emailinput->toPlainText().isEmpty()){
+    if(emailinput->text().isEmpty()){
         mentionstring += "電子郵件\n";
     }else{
-        submit.bindValue(":email",emailinput->toPlainText());
+        submit.bindValue(":email",emailinput->text());
     }
-    if(telephonedayinput->toPlainText().isEmpty()){
+    if(telephonedayinput->text().isEmpty()){
         mentionstring += "電話(日)\n";
     }else{
-        submit.bindValue(":telephoneday",telephonedayinput->toPlainText());
+        submit.bindValue(":telephoneday",telephonedayinput->text());
     }
-    if(telephonenightinput->toPlainText().isEmpty()){
+    if(telephonenightinput->text().isEmpty()){
         mentionstring += "電話(夜)\n";
     }else{
-        submit.bindValue(":telephonenight",telephonenightinput->toPlainText());
+        submit.bindValue(":telephonenight",telephonenightinput->text());
     }
-    if(mobileinput->toPlainText().isEmpty()){
+    if(mobileinput->text().isEmpty()){
         mentionstring += "手機號碼\n";
     }else{
-        submit.bindValue(":mobile",mobileinput->toPlainText());
+        submit.bindValue(":mobile",mobileinput->text());
     }
-    if(graduateschoolinput->toPlainText().isEmpty()){
+    if(graduateschoolinput->text().isEmpty()){
         mentionstring += "畢業學校\n";
     }else{
-        submit.bindValue(":graduateschool",graduateschoolinput->toPlainText());
+        submit.bindValue(":graduateschool",graduateschoolinput->text());
     }
-    if(graduatedepartmentinput->toPlainText().isEmpty()){
+    if(graduatedepartmentinput->text().isEmpty()){
         mentionstring += "畢業科系\n";
     }else{
-        submit.bindValue(":graduatedepartment",graduatedepartmentinput->toPlainText());
+        submit.bindValue(":graduatedepartment",graduatedepartmentinput->text());
     }
-    if(companynameinput->toPlainText().isEmpty()){
+    if(companynameinput->text().isEmpty()){
         mentionstring += "公司名稱\n";
     }else{
-        submit.bindValue(":companyname",companynameinput->toPlainText());
+        submit.bindValue(":companyname",companynameinput->text());
     }
-    if(companypositioninput->toPlainText().isEmpty()){
+    if(companypositioninput->text().isEmpty()){
         mentionstring += "目前職位\n";
     }else{
-        submit.bindValue(":currentposition",companypositioninput->toPlainText());
+        submit.bindValue(":currentposition",companypositioninput->text());
     }
     if(!credityes->isChecked() && !creditno->isChecked()){
         mentionstring += "參加學分班\n";

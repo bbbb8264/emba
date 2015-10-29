@@ -1,15 +1,14 @@
-#ifndef STUDENTPERSONALWINDOWMENU
-#define STUDENTPERSONALWINDOWMENU
+#ifndef TEACHERPERSONALWINDOWMENU
+#define TEACHERPERSONALWINDOWMENU
 
-#endif // STUDENTPERSONALWINDOWMENU
+#endif // TEACHERPERSONALWINDOWMENU
 
 #include <QtWidgets>
 class PersonalWindowMenuButton;
-class StudentPersonalWindowMenu : public QWidget{
+class TeacherPersonalWindowMenu : public QWidget{
 public:
-    StudentPersonalWindowMenu();
-    PersonalWindowMenuButton* browsestudentdatalabel;
-    PersonalWindowMenuButton* modifystudentdatalabel;
+    TeacherPersonalWindowMenu();
+    PersonalWindowMenuButton* modifyteacherdatalabel;
     PersonalWindowMenuButton* browsecourserecordlabel;
     PersonalWindowMenuButton* browsethesisrecordlabel;
     PersonalWindowMenuButton* backlabel;

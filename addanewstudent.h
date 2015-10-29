@@ -2,7 +2,7 @@
 #define ADDANEWSTUDENT
 
 #endif // ADDANEWSTUDENTD
-#include "mainwindow.h"
+
 #include "changepicture.h"
 #include <QtWidgets>
 class AddANewStudent : public QFrame

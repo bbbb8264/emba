@@ -1,10 +1,10 @@
-#include "studentpersonalwindowmenubutton.h"
+#include "personalwindowmenubutton.h"
 
-void StudentPersonalWindowMenuButton::mousePressEvent(QMouseEvent * ev)
+void PersonalWindowMenuButton::mousePressEvent(QMouseEvent * ev)
 {
     setFrameStyle(QFrame::Panel | QFrame::Sunken);
 }
-void StudentPersonalWindowMenuButton::mouseReleaseEvent(QMouseEvent * ev)
+void PersonalWindowMenuButton::mouseReleaseEvent(QMouseEvent * ev)
 {
     setFrameStyle(QFrame::Panel | QFrame::Raised);
     emit clicked();

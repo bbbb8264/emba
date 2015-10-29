@@ -1,32 +1,28 @@
-#include "studentpersonalwindowmenu.h"
+#include "teacherpersonalwindowmenu.h"
 #include "personalwindowmenubutton.h"
 #pragma execution_character_set("utf-8")
-void StudentPersonalWindowMenu::init(){
-    browsestudentdatalabel = new PersonalWindowMenuButton;
-    modifystudentdatalabel = new PersonalWindowMenuButton;
+void TeacherPersonalWindowMenu::init(){
+    modifyteacherdatalabel = new PersonalWindowMenuButton;
     browsecourserecordlabel = new PersonalWindowMenuButton;
     browsethesisrecordlabel = new PersonalWindowMenuButton;
     backlabel = new PersonalWindowMenuButton;
     mainlayout = new QFormLayout;
 }
 
-StudentPersonalWindowMenu::StudentPersonalWindowMenu(){
+TeacherPersonalWindowMenu::TeacherPersonalWindowMenu(){
     init();
 
-    browsestudentdatalabel->setText("查看學生資料");
-    modifystudentdatalabel->setText("修改學生資料");
-    browsecourserecordlabel->setText("查看學生修課紀錄");
-    browsethesisrecordlabel->setText("查看學生論文紀錄");
-    backlabel->setText("返回搜尋學生");
+    modifyteacherdatalabel->setText("修改老師資料");
+    browsecourserecordlabel->setText("查看開課紀錄");
+    browsethesisrecordlabel->setText("查看論文指導紀錄");
+    backlabel->setText("返回搜尋老師");
 
-    setlabelattribute(browsestudentdatalabel);
-    setlabelattribute(modifystudentdatalabel);
+    setlabelattribute(modifyteacherdatalabel);
     setlabelattribute(browsecourserecordlabel);
     setlabelattribute(browsethesisrecordlabel);
     setlabelattribute(backlabel);
 
-    mainlayout->addRow(browsestudentdatalabel);
-    mainlayout->addRow(modifystudentdatalabel);
+    mainlayout->addRow(modifyteacherdatalabel);
     mainlayout->addRow(browsecourserecordlabel);
     mainlayout->addRow(browsethesisrecordlabel);
     mainlayout->addRow(backlabel);
@@ -37,7 +33,7 @@ StudentPersonalWindowMenu::StudentPersonalWindowMenu(){
     setLayout(mainlayout);
 }
 
-void StudentPersonalWindowMenu::setlabelattribute(QLabel* label){
+void TeacherPersonalWindowMenu::setlabelattribute(QLabel* label){
     label->setFrameShadow(QFrame::Raised);
     label->setFrameShape(QFrame::Panel);
     label->setAlignment(Qt::AlignCenter);
@@ -46,3 +42,4 @@ void StudentPersonalWindowMenu::setlabelattribute(QLabel* label){
     label->setMinimumHeight(80);
     label->setStyleSheet("background-color:#fbfbfb;font-size:25px;font-family:Microsoft JhengHei");
 }
+
